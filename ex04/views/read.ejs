@@ -1,0 +1,169 @@
+<form id="frm" method="post" action="update">
+    <table>
+        <tr>
+            <th width=100 class="title">상품코드</th>
+            <td width=500><input type="text" name="code" value="<%=vo.code%>" readonly></td>
+        </tr>
+        <tr>
+            <th width=100 class="title">상품이름</th>
+            <td width=500><input type="text" name="name" value="<%=vo.name%>" size=50></td>
+        </tr>
+        <tr>
+            <th width=100 class="title">상품가격</th>
+            <td width=500><input type="text" name="price" value="<%=vo.price%>"></td>
+        </tr>
+        <tr>
+            <th width=100 class="title">제조사</th>
+            <td width=500><input type="text" name="company" value="<%=vo.company%>"></td>
+        </tr>
+    </table>
+    <div id="buttons">
+        <input type="submit" value="수정" class="button">
+        <input type="reset" value="취소" class="button">
+        <input type="button" value="삭제" class="button" id="btndel">
+        <input type="button" value="목록" class="button" onclick="location.href='/'">
+    </div>
+</form>
+<hr />
+<!--상품매출현황-->
+<h3>
+    <%=vo.name%>의 매출현황
+</h3>
+<!--매출현황등록-->
+<table>
+    <tr>
+        <th width=70 class="title">판매일</th>
+        <td><input type="text" id="sdate" size=8 value="<%=today%>"></td>
+        <th width=70 class="title">판매가</th>
+        <td><input type="text" id="price" value="<%=vo.price%>" size=2></td>
+        <th width=100 class="title">판매수량</th>
+        <td><input type="text" id="quantity" placeholder="수량" size=2></td>
+        <td><button id="btninsert">매출등록</button></td>
+    </tr>
+</table>
+<table id="tbl"></table>
+<script id="temp" type="text/x-handlebars-template">
+    <tr class="title">
+        <th width=50>번호</th>
+        <th width=200>판매일</th>
+        <th width=100>판매가격</th>
+        <th width=100>판매수량</th>
+        <th width=100>금액</th>
+        <th width=100>수정</th>
+        <th width=100>삭제</th>
+    </tr>
+    {{#each .}}
+    <tr class="row">
+        <td class="id">{{id}}</td>
+        <td>{{fdate}}</td>
+        <td><input type="text" class="price" value="{{price}}" size=2></td>
+        <td><input type="text" class="quantity" value="{{quantity}}" size=2></td>
+        <td>{{sum}}원</td>
+        <td><button class="btnup">수정</button></td>
+        <td><button class="btndelete">삭제</button></td>
+    </tr>
+    {{/each}}
+</script>
+
+<script>
+    var code = $(frm.code).val(); //code="<%=vo.code%>";
+    
+    //수정버튼을 클릭한경우
+    $("#tbl").on("click", ".row .btnup", function () {
+        var row = $(this).parent().parent();
+        var id = row.find(".id").html();
+        var price = row.find(".price").val();
+        var quantity = row.find(".quantity").val();
+        if (!confirm(`${id}-${price}-${quantity} 수정?`)) return;
+        $.ajax({
+            type: "post",
+            data: { id: id, price: price, quantity: quantity },
+            url: "/sale/update",
+            success: function (data) {
+                alert("수정?")
+                getsale();
+                // var template = Handlebars.compile($("#temp").html());
+                // $("#tbl").html(template(data));
+            }
+        });
+    });
+    //삭제버튼을 클릭한경우
+    $("#tbl").on("click", ".row .btndelete", function () {
+        var row = $(this).parent().parent();
+        var id = row.find(".id").html();
+        if (!confirm(`${id} 삭제?`)) return;
+        $.ajax({
+            type: "post",
+            data: { id: id },
+            url: "/sale/delete",
+            success: function (data) {
+                alert("삭제?");
+                getsale();
+                // var template = Handlebars.compile($("#temp").html());
+                // $("#tbl").html(template(data));
+            }
+        });
+    });
+    //매출등록버튼
+    $("#btninsert").on("click", function () {
+        var sdate = $("#sdate").val();
+        var price = $("#price").val();
+        var quantity = $("#quantity").val();
+        if (quantity == "") {
+            alert("판매수량을 입력해라");
+            $("#quantity").focus();
+        } else {
+            if (!confirm(`${code}-${sdate}-${quantity}-${price} 등록?`)) return;
+            $.ajax({
+                type: "post",
+                url: "/sale/insert",
+                data: { code: code, sdate: sdate, price: price, quantity: quantity },
+                success: function () {
+                    alert("매출등록성공");
+                    getsale();
+                }
+            });
+        }
+    });
+
+    getsale();
+    function getsale() {
+        $.ajax({
+            type: "get",
+            data: { code: code },
+            dataType: "json",
+            url: "/sale/list",
+            success: function (data) {
+                var template = Handlebars.compile($("#temp").html());
+                $("#tbl").html(template(data));
+            }
+        });
+    }
+    //삭제
+    $("#btndel").on("click", function () {
+        if (!confirm(`${code}를(을) 삭제할래?`)) return;
+        frm.action = "delete";
+        frm.submit();
+    });
+
+    $(frm).on("submit", function (e) {
+        e.preventDefault();
+        var code = $(frm.code).val();
+        var name = $(frm.name).val();
+        var price = $(frm.price).val();
+        var company = $(frm.company).val();
+        if (name == "") {
+            alert("상품이름을 입력하셈")
+            $(frm.name).focus();
+        } else if (price == "") {
+            alert("가격을 입력하셈")
+            $(frm.price).focus();
+        } else if (company == "") {
+            alert("제조사를 입력하셈")
+            $(frm.company).focus();
+        } else {
+            if (!confirm(`${code}-${name}-${price}-${company} 수정?`)) return;
+            frm.submit();
+        }
+    });
+</script>

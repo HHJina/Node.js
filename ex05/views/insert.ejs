@@ -1,0 +1,42 @@
+<form id="frm" method="post" action="insert">
+    <table>
+        <tr>
+            <th width=100 class="title">캠핑장이름</th>
+            <td width=500><input type="text" name="name" ></td>
+        </tr>
+        <tr>
+            <th width=100 class="title">캠핑장전화</th>
+            <td width=500><input type="text" name="tel"></td>
+        </tr>
+        <tr>
+            <th width=100 class="title">캠핑장주소</th>
+            <td width=500><input type="text" name="address" size=50></td>
+        </tr>
+    </table>
+    <div id="buttons">
+        <input type="submit" value="등록" class="button">
+        <input type="reset" value="취소" class="button">
+        <input type="button" value="목록" class="button" onclick="location.href='/'">
+    </div>
+</form>
+<script>
+    $(frm).on("submit", function(e){
+        e.preventDefault();
+        var name=$(frm.name).val();
+        var tel=$(frm.tel).val();
+        var address=$(frm.address).val();
+        if(name==""){
+            alert("이름을 입력하셈")
+            $(frm.name).focus();
+        }else if(tel==""){
+            alert("전화번호를 입력하셈")
+            $(frm.tel).focus();
+        }else if(address==""){
+            alert("주소를 입력하셈")
+            $(frm.address).focus();
+        }else{
+            if(!confirm(`${name}-${tel}-${address} 저장?`)) return;
+            frm.submit();
+        }
+    });
+</script>

@@ -1,0 +1,48 @@
+<table id="tbl"></table>
+<script id="temp" type="text/x-handlebars-template">
+    <tr>
+        <td colspan="5">
+            <div id="buttons">
+                <input type="button" value="상품등록" class="button" onclick="location.href='/camp/insert'">
+            </div>
+        </td>
+    </tr>
+    <tr class="title">
+        <th width=100>번호</th>
+        <th width=200>캠핑장이름</th>
+        <th width=200>전화번호</th>
+        <th width=300>캠핑장주소</th>
+        <th width=50>삭제</th>
+    </tr>
+    {{#each .}}
+    <tr class="row" >
+        <td>{{cid}}</td>
+        <td onclick="location.href='/camp/read?cid={{cid}}'">{{name}}</td>
+        <td>{{tel}}</td>
+        <td>{{address}}</td>
+        <td><button cid={{cid}}>삭제</button></td>
+    </tr>
+    {{/each}}
+</script>
+<script>
+    getcamp();
+    $("#tbl").on("click", ".row button", function(){
+        var cid=$(this).attr("cid");
+        if(!confirm(`${cid}을(를) 삭제할거?`)) return;
+        location.href='/camp/delete?cid=' + cid;
+    });
+
+
+    getcamp();
+    function getcamp() {
+        $.ajax({
+            type: "get",
+            dataType: "json",
+            url: "/camp/list",
+            success: function (data) {
+                var template = Handlebars.compile($("#temp").html());
+                $("#tbl").html(template(data));
+            }
+        });
+    }
+</script>

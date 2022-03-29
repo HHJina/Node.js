@@ -1,0 +1,86 @@
+<style>
+    #container{
+        width:1000px;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+    .box{
+        float: left;
+        height: 180px;
+        width:200px;
+        border: 1px solid black;
+        margin:10px;
+        border-radius: 20px;
+        padding: 10px;
+        background-color: aqua;
+    }
+    img{cursor: pointer;}
+</style>
+<div id="container"></div>
+<script id="temp" type="text/x-handlebars-template">
+    {{#each rows}}
+    <div class="box">
+        <img src="{{getSrc image}}" width=150 onclick="location.href='product/read?code={{code}}'">
+        <div>{{code}}</div>
+        <div>{{title}}</div>
+        <div>{{name}}</div>
+        <div>{{fprice}}\</div>
+    </div>
+    {{/each}}
+</script>
+<script>
+    Handlebars.registerHelper("getSrc", function(image){
+        if(image){
+            return "/upload/" + image;
+        }else{
+            return "http://placehold.it/175x130";
+        }
+    });
+</script>
+<div id="buttons">
+    <button id="prev">이전</button>
+    <span id="curpage">1/2</span>
+    <button id="next">다음</button>
+</div>
+<script>
+    var page='1';
+    getproduct();
+    //이전버튼 눌렀을 경우
+    $("#prev").on("click",function(){
+        page--;
+        getproduct();
+    });
+    //다음버튼 눌렀을 경우
+    $("#next").on("click",function(){
+        page++;
+        getproduct();
+    });
+
+
+    function getproduct(){
+        $.ajax({
+            type:"get",
+            dataType:"json",
+            url:"/product/list",
+            data:{page:page},
+            success:function(data){
+                var template = Handlebars.compile($("#temp").html());
+                $("#container").html(template(data));
+                //마지막페이지
+                var lastpage=Math.ceil(data.total/4);
+                $("#curpage").html(page+ "/" + lastpage);
+
+                if(page==1){
+                    $("#prev").attr("disable", true);
+                }else{
+                    $("#prev").attr("disable", false);
+                }
+                if(page==lastpage){
+                    $("#next").attr("disable", true);
+                }else{
+                    $("#next").attr("disable", false);
+                }
+            }
+        });
+    };
+</script>

@@ -1,0 +1,43 @@
+<table>
+    <td width=100 class="title">시설물이름</td>
+    <td width=350><input type="text" id="name" size=45></td>
+    <td width=100><button id="btndel">등록</button></td>
+</table>
+<table id="tbl"></table>
+<script id="temp" type="text/x-handlebars-template">
+    <tr class="title">
+        <th width=100>번호</th>
+        <th width=200>시설물이름</th>
+        <th width=50>삭제</th>
+        <th width=50>수정</th>
+    </tr>
+    {{#each .}}
+    <tr class="row" >
+        <td class="fid">{{fid}}</td>
+        <td><input type="text" class="name" value="{{name}}" size=50></td>
+        <td><button class="btndel">삭제</button></td>
+        <td><button class="btndup">수정</button></td>
+    </tr>
+    {{/each}}
+</script>
+<script>
+    getfacility();
+    $("#tbl").on("click", ".row button", function(){
+        var fid=$(this).attr("cid");
+        if(!confirm(`${fid}을(를) 삭제할거?`)) return;
+        location.href='/camp/delete?cid=' + cid;
+    });
+
+    getfacility();
+    function getfacility() {
+        $.ajax({
+            type: "get",
+            dataType: "json",
+            url: "/facility/list",
+            success: function (data) {
+                var template = Handlebars.compile($("#temp").html());
+                $("#tbl").html(template(data));
+            }
+        });
+    }
+</script>

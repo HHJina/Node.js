@@ -1,0 +1,120 @@
+<style>
+    .box img {
+        width: 130px;
+        border-radius: 50px;
+        border: 5px solid yellow;
+        cursor:pointer;
+        
+    }
+
+    .box .title {
+        border: 3px solid gray;
+        border-radius: 30px;
+        background-color: lavender;
+        font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis; /*말줄임표*/
+        white-space: nowrap;
+        color: yellowgreen;
+        text-align: center;
+    }
+
+
+    #container {
+        width: 900px;
+        overflow: hidden;
+        margin: 0 auto;
+        margin-top: 30px;
+    }
+
+    .box {
+        width: 200px;
+        float: left;
+        margin-left: 15px;
+        margin-bottom: 20px;
+        border: 2px solid gray;
+        border-radius: 30px;
+        background-color: violet;
+        height: 250px;
+        box-shadow: 5px;
+    }
+
+    #condition {
+        width: 880px;
+        margin: 0 auto;
+        padding: 20px;
+        border-bottom: 1px dotted gray;
+    }
+</style>
+<div id="condition">
+    <input type="text" placeholder="검색어" id="word">
+    <button id="search">검색데이터</button>
+    검색데이터<span id="total"></span>건
+</div>
+<div id="container">
+</div>
+<script id="temp" type="text/x-handlebars-template">
+    {{#each rows}}
+    <div class="box">
+        <img src="/images/{{image}}" onclick="location.href='/book/read?code={{code}}'">
+        <div class="title">[{{code}}]{{title}}</div>
+        <div>{{fprice}}</div>
+    </div>
+    {{/each}}
+</script>
+<div id="buttons">
+    <button id="prev">이전</button>
+    <span id="curpage"></span>
+    <button id="next">다음</button>
+</div>
+<script>
+    var page = 1;
+    var word = $("#word").val();
+    getbook();
+
+    $("#word").on('keydown', function (e) {
+        if (e.keyCode == 13) $("#search").click();
+    });
+    $("#search").on("click", function () {
+        word = $("#word").val();
+        page = 1;
+        getbook();
+    });
+
+    $("#prev").on("click", function () {
+        page--;
+        getbook();
+    });
+    $("#next").on("click", function () {
+        page++;
+        getbook();
+    });
+
+    function getbook() {
+        $.ajax({
+            type: "get",
+            dataType: "json",
+            url: "/book/list",
+            data: { page: page, word: word },
+            success: function (data) {
+                var template = Handlebars.compile($("#temp").html());
+                $("#container").html(template(data));
+                var lastpage = Math.ceil(data.total / 8);
+                $("#curpage").html(page + '/' + lastpage);
+                $("#total").html(data.total);
+
+                if (page == 1) {
+                    $("#prev").attr("disabled", true);
+                } else {
+                    $("#prev").attr("disabled", false);
+                }
+
+                if (page == lastpage) {
+                    $("#next").attr("disabled", true);
+                } else {
+                    $("#next").attr("disabled", false);
+                }
+            }
+        })
+    }
+</script>

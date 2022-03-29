@@ -1,0 +1,75 @@
+
+<form name="frm" method="post" action="update" enctype="multipart/form-data">
+    <table>
+        <tr>
+            <td width=100 class="title">상품코드</td>
+            <td width=500><input type="text" name="code" size="50" value="<%=vo.code%>" readonly></td>
+        </tr>
+        <tr>
+            <td width=100 class="title">상품이름</td>
+            <td width=500><input type="text" name="title" size="50" value="<%=vo.title%>"></td>
+        </tr>
+        <tr>
+            <td width=100 class="title">상품가격</td>
+            <td width=500><input type="text" name="price" size="5" value="<%=vo.price%>"></td>
+        </tr>
+        <tr>
+            <td width=100 class="title">이미지</td>
+            <td>
+                <img src="<%=vo.image%>" id="image">
+                <input type="file" name="image" style="display: none;">
+                <input type="hidden" name="oldImage" value="<%=vo.image%>">
+            </td>
+        </tr>
+    </table>
+    <div id="buttons">
+        <input type="submit" value="상품수정" class="button">
+        <input type="button" value="상품삭제" class="button" id="btnDelete">
+        <input type="reset" value="등록취소" class="button">
+        <input type="button" value="상품목록" class="button" onclick="location.href='/'">
+    </div>
+</form>
+<script>
+    //삭제버튼을 클릭한 경우
+    $("#btnDelete").on("click",function(){
+        var code=$(frm.code).val();
+        var image=$(frm.image).val();
+        if(!confirm(`${code}:${image} 삭제?`)) return;
+        location.href=`/food/delete?code=${code}&image=${image}`;
+    });
+    //submit 버튼을 클릭한 경우
+    $(frm).on("submit", function(e){
+        e.preventDefault();
+        var title=$(frm.title).val();
+        var price=$(frm.price).val();
+        var image=$(frm.image).val();
+
+        if(title==""){
+            alert("상품이름을 입력하세요.");
+            $(frm.title).focus();
+        }else if(price==""){
+            alert("상품가격을 입력하세요.");
+            $(frm.price).focus();
+        }else if(image==""){
+            alert("상품사진을 선택해주세요.");
+        }else{
+            if(!confirm("상품을 등록하시겠습니까?")) return;
+            frm.submit();
+        }
+    });
+    //이미지를 클릭한경우
+    $("#image").on("click",function(){
+        $(frm.image).click();
+    });
+
+    //이미지 미리보기
+    $(frm.image).on("change",function(e){
+        var reader=new FileReader();
+        reader.readAsDataURL(this.files[0])
+        reader.onload=function(e){
+            $("#image").attr("src", e.target.result);
+        }
+    });
+
+
+</script>

@@ -1,0 +1,37 @@
+<table id="tbl"></table>
+<script id="temp" type="text/x-handlebars-template">
+    <tr>
+        <td colspan="4">
+            <a href="/address/insert">주소등록</a>
+        </td>
+    </tr>
+  <tr class="title">
+    <th width=100>번호</th>
+    <th width=100>성명</th>
+    <th width=200>전화번호</th>
+    <th width=400>주소</th>
+  </tr>
+  {{#each .}}
+  <tr class="row" onclick="location.href='/address/read?id={{id}}'">
+    <td>{{id}}</td>
+    <td>{{name}}</td>
+    <td>{{tel}}</td>
+    <td>{{address}}</td>
+  </tr>
+  {{/each}}
+</script>
+
+<script>
+    getaddress();
+    function getaddress(){
+      $.ajax({
+        type: "get",
+        dataType: "json",
+        url: "/address",
+        success:function(data){
+          var template = Handlebars.compile($("#temp").html());
+          $("#tbl").html(template(data));
+        }
+      });
+    }
+  </script>

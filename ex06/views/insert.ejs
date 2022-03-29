@@ -1,0 +1,60 @@
+<form id="frm" method="post" action="insert" enctype="multipart/form-data">
+    <table>
+        <tr>
+            <th class="title" width=100>상품코드</th>
+            <td width=500><input type="text" name="code" size=3 value="<%=code%>" readonly></td>
+        </tr>
+        <tr>
+            <th class="title" width=100>상품이름</th>
+            <td width=500><input type="text" name="name" size=50 ></td>
+        </tr>
+        <tr>
+            <th class="title" width=100>상품가격</th>
+            <td width=500><input type="text" name="price" size=5>\</td>
+        </tr>
+        <tr>
+            <th class="title" width=100>상품이미지</th>
+            <td width=500>
+                <img src="http://placehold.it/175x140" width=150 id="image">
+                <input type="file" name="image" size=50 style="display:none">
+            </td>
+        </tr>
+    </table>
+    <div id="buttons">
+        <input type="submit" value="상품등록" class="button">
+        <input type="reset" value="등록취소" class="button">
+        <input type="button" value="목록" class="button" onclick="location.href='/'">
+    </div>
+</form>
+<script>
+    //submit 버튼을 클릭한 경우
+    $(frm).on("submit", function(e){
+        e.preventDefault();
+        var name=$(frm.name).val();
+        var price=$(frm.price).val();
+        var image=$(frm.image).val();
+        if(name==""){
+            alert("상품명을 넣어야지");
+            $(frm.name).focus();
+        }else if(price==""){
+            alert("가격을 입력해라");
+            $(frm.price).focus();
+        }else{
+            if(!confirm(`${name}-${price}만원 등록할거여?`)) return;
+            frm.submit();
+        }
+    });
+    //이미지 상자를 클릭한경우
+    $("#image").on("click", function (){
+        $(frm.image).click();
+    });
+
+    //이미지 미리보기
+    $(frm.image).on("change", function(e){
+        var reader=new FileReader();
+        reader.onload=function(e){
+            $("#image").attr("src", e.target.result);
+        }
+        reader.readAsDataURL(this.files[0]);
+    });
+</script>

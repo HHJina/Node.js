@@ -1,0 +1,123 @@
+<style>
+    #box {
+        width: 900px;
+        overflow: hidden;
+        margin: 0 auto;
+        border: 1px dotted gray;
+    }
+
+    #box img {
+        width: 350px;
+    }
+
+    #image {
+        width: 100px;
+        float: left;
+        border-radius: 30px;
+    }
+
+    #info {
+        width: 450px;
+        float: right;
+        margin: 0px auto;
+    }
+</style>
+<h1>상품정보</h1>
+<div id="box">
+    <div id="image">
+        <img src="/images/<%=vo.image%>">
+    </div>
+    <div id="info">
+        <h1>
+            <%=vo.title%>
+        </h1>
+        <p>What is a Product Description?
+            제품 설명은 이 제품이 어떤 것이고 왜 구매 가치가 있는지를 설명하는 마케팅 카피입니다. 제품 설명의 목적은 당연히 판매지요. 일정 수준 이상의 트래픽과 경쟁적인 가격을 제안 하는데도
+            매출이 저조하다면 디스크립션을 체크해 볼 필요가 있습니다.
+            여러분이 이베이, 아마존 등의 마켓 플레이스와 쇼피파이와 같은 이커머스 플랫폼에 작성한 제품 설명은 구글에서 아래 사진과 같이 노출됩니다. 디스크립션은 고객이 제품에 대한 정보를 얻을 뿐
+            아니라 검색결과 페이지에서 클릭을 유도하는 중요한 요소 입니다.
+        </p>
+        <h3>
+            <%=vo.fprice%>\
+        </h3>
+        <div id="buttons">
+            <button>개같이구매</button>
+            <button>장바구니</button>
+        </div>
+    </div>
+</div>
+<hr />
+<h3 style="padding: 10px;">
+    <%=vo.title%>의 리뷰목록
+</h3>
+<table>
+    <% if(userid==null){ %>
+        <tr>
+            <td width=600px>
+                리뷰를 작성하시려면 <a href="/users/login">로그인</a>하세요
+            </td>
+        </tr>
+        <% }else{ %>
+            <tr>
+                <td>
+                    <textarea rows="5" cols="90" id="text"></textarea>
+                    <button id="btnInsert">글등록</button>
+                </td>
+            </tr>
+            <% } %>
+</table>
+<table id="review"></table>
+<script id="temp" type="text/x-handlebars-template">
+        {{#each .}}
+            <tr>
+                <th width=100 class="title">작성자</th>
+                <td width=200>{{uid}}</td>
+                <th width=100 class="title">작성일</th>
+                <td width=100>{{fdate}}</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="padding-bottom:10px ;">
+                    {{text}}
+                    <button id="btnDelete">삭제</button>
+                </td>
+            </tr>
+        {{/each}}
+    </script>
+
+<script>
+    var code = "<%=vo.code%>";
+    var uid = "<%=userid%>";
+
+    getreview();
+
+    $("#btnInsert").on("click", function () {
+        var text = $("#text").val();
+        if (text == "") {
+            alert("내용을 넣으라우");
+            $("#text").focus();
+        } else {
+            if (!confirm(uid + "글을 등록하라우?")) return;
+            $.ajax({
+                type: "post",
+                data: { code: code, uid: uid, text: text },
+                url: "/review/insert",
+                success: function () {
+                    alert("등록완료");
+                    getreview();
+                }
+            });
+        }
+    });
+    function getreview() {
+        $.ajax({
+            type: "get",
+            dataType: "json",
+            data: { code: code },
+            url: "/review/list",
+            success: function (data) {
+                var template = Handlebars.compile($("#temp").html());
+                $("#review").html(template(data));
+            }
+        })
+    }
+</script>

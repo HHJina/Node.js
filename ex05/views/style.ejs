@@ -1,0 +1,36 @@
+<table>
+    <td width=100 class="title">스타일이름</td>
+    <td width=350><input type="text" id="name" size=45></td>
+    <td width=100><button id="btndel">등록</button></td>
+</table>
+<table id="tbl"></table>
+<script id="temp" type="text/x-handlebars-template">
+    <tr class="title">
+        <th width=100>번호</th>
+        <th width=200>스타일이름</th>
+        <th width=50>삭제</th>
+        <th width=50>수정</th>
+    </tr>
+    {{#each .}}
+    <tr class="row" >
+        <td class="sid">{{sid}}</td>
+        <td><input type="text" class="name" value="{{name}}" size=50></td>
+        <td><button class="btndel">삭제</button></td>
+        <td><button class="btndup">수정</button></td>
+    </tr>
+    {{/each}}
+</script>
+<script>
+    getstyle();
+    function getstyle() {
+        $.ajax({
+            type: "get",
+            dataType: "json",
+            url: "/style/list",
+            success: function (data) {
+                var template = Handlebars.compile($("#temp").html());
+                $("#tbl").html(template(data));
+            }
+        });
+    }
+</script>

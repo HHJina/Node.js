@@ -1,0 +1,45 @@
+*{margin:0px; padding:0px;}
+body{width:960px; margin: 0 auto; background-color: lightblue;}
+#page{
+    background-color: burlywood;
+    height: 1800px;
+}
+h1,h3,h5{
+    text-align: center;
+    padding-top: 50px;
+}
+table{
+    margin:0 auto;
+    margin-top: 50px;
+    border-collapse: collapse;
+}
+tr,td,th{
+    border:2px solid hotpink; 
+    padding:15px;
+}
+th{
+    background: gold;
+}
+#buttons{
+    width:600px; 
+    margin: 0 auto; 
+    text-align: center; 
+    padding:10px;
+}
+ #buttons .button, button{
+    width:80px;
+    padding:3px;
+    background: aqua;
+    color: blue;
+    border-radius: 3px;
+    border:none;
+    cursor:pointer;
+}
+input[type="text"] input[type="password"] {padding:5px; border:1px solid gold}
+
+a {text-decoration: none; color:green; font-size: 15px;}
+a:hover{color: blue}
+
+#menu{padding:20px; border: 1px dotted aliceblue; margin-top:10px;}
+
+.row:hover{background: gray; color: white; cursor: pointer;}

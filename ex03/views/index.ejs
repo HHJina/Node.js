@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
+  <link rel='stylesheet' href='/stylesheets/common.css' />
+  <title>
+    <%= title %>
+  </title>
+</head>
+<body>
+  <div id="page">
+    <div id="top">
+      <h1><%= title %></h1>
+    </div>
+    <div id="center">
+      <%-include(pageName)%>
+    </div>
+    <div id="bottom">
+      <h3>Copyright 2022 인천일보아카데미 All Right Reserved.</h3>
+    </div>
+  </div>
+</body>
+  
+</html>

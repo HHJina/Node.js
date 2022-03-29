@@ -1,0 +1,210 @@
+<form id="frm" method="post" action="update">
+    <table>
+        <tr>
+            <th width=100 class="title">캠핑장번호</th>
+            <td width=500><input type="text" name="cid" readonly value="<%=vo.cid%>"></td>
+        </tr>
+        <tr>
+            <th width=100 class="title">캠핑장이름</th>
+            <td width=500><input type="text" name="name" value="<%=vo.name%>"></td>
+        </tr>
+        <tr>
+            <th width=100 class="title">캠핑장전화</th>
+            <td width=500><input type="text" name="tel" value="<%=vo.tel%>"></td>
+        </tr>
+        <tr>
+            <th width=100 class="title">캠핑장주소</th>
+            <td width=500><input type="text" name="address" value="<%=vo.address%>" size=50></td>
+        </tr>
+    </table>
+    <div id="buttons">
+        <input type="submit" value="수정" class="button">
+        <input type="reset" value="취소" class="button">
+        <input type="button" value="목록" class="button" onclick="location.href='/'">
+    </div>
+</form>
+
+<!--스타일목록-->
+<table>
+    <tr>
+        <td colspan="2">
+            <select id="style_all" style="height:25px; width:200px; text-align:center;margin-left:180px; "></select>
+            <button id="style_insert">등록</button>
+        </td>
+    </tr>
+    <tr>
+        <th width=100 class="title">스타일</th>
+        <td width=500 id="style"></td>
+    </tr>
+</table>
+<!--캠핑장별 스타일-->
+<script id="temp_style" type="text/x-handlebars-template">
+    {{#each .}}
+        <span>{{name}}</span>
+        <button id="asd" sid="{{sid}}">삭제</button>
+    {{/each}}
+</script>
+<script id="temp_style_all" type="text/x-handlebars-template">
+    {{#each .}}
+        <option value="{{sid}}">{{name}}</option>
+    {{/each}}
+</script>
+
+<!--시설물목록-->
+<table>
+    <tr>
+        <td colspan="2">
+            <select id="facility_all" style="height:25px; width:200px; text-align:center; margin-left:180px;"></select>
+            <button id="facility_insert">등록</button>
+        </td>
+    </tr>
+    <tr>
+        <th width=100 class="title">시설물</th>
+        <td width=500 id="facility"></td>
+    </tr>
+</table>
+<!--캠핑장별 시설물-->
+<script id="temp_facility" type="text/x-handlebars-template">
+    {{#each .}}
+        <span>{{name}}</span>
+        <button id="asd" fid="{{fid}}">삭제</button>
+    {{/each}}
+</script>
+<script id="temp_facility_all" type="text/x-handlebars-template">
+    {{#each .}}
+        <option value="{{fid}}">{{name}}</option>
+    {{/each}}
+</script>
+
+<script>
+    var cid = $(frm.cid).val();
+
+    //스타일삭제 버튼을 클릭한 경우
+    $("#style").on("click", ".asd", function () {
+        var sid = $(this).attr("sid");
+        if (!confirm(`${cid}:${sid} 삭제?`)) return;
+        $.ajax({
+            type: "post",
+            url: "/style/camp/delete",
+            data: { cid: cid, sid: sid },
+            success: function () {
+                getstyle();
+            }
+        })
+    });
+
+    //스타일등록 버튼을 클릭한경우
+    $("#style_insert").on("click", function () {
+        var sid = $("#style_all").val();
+        if (!confirm(`${cid}:${sid} 등록?`)) return;
+        $.ajax({
+            type: "post",
+            url: "/style/camp/insert",
+            data: { cid: cid, sid: sid },
+            success: function () {
+                getstyle();
+            }
+        })
+    });
+
+
+    //시설물삭제 버튼을 클릭한 경우
+    $("#facility").on("click", ".asd", function () {
+        var fid = $(this).attr("fid");
+        if (!confirm(`${cid}:${fid} 삭제?`)) return;
+        $.ajax({
+            type: "post",
+            url: "/facility/camp/delete",
+            data: { cid: cid, fid: fid },
+            success: function () {
+                getfacility();
+            }
+        })
+    });
+
+    //시설물등록 버튼을 클릭한경우
+    $("#facility_insert").on("click", function () {
+        var fid = $("#facility_all").val();
+        if (!confirm(`${cid}:${fid} 등록?`)) return;
+        $.ajax({
+            type: "post",
+            url: "/facility/camp/insert",
+            data: { cid: cid, fid: fid },
+            success: function () {
+                getfacility();
+            }
+        })
+    });
+
+
+    //캠핑장별 스타일출력
+    getstyle();
+    function getstyle() {
+        $.ajax({
+            type: "get",
+            dataType: "json",
+            data: { cid: cid },
+            url: "/style/camp",
+            success: function (data) {
+                var template = Handlebars.compile($("#temp_style").html());
+                $("#style").html(template(data));
+            }
+        });
+    }
+    //캠핑장별 시설물출력
+    getfacility();
+    function getfacility() {
+        $.ajax({
+            type: "get",
+            dateType: "json",
+            url: "/facility/camp",
+            data: { cid: cid },
+            success: function (data) {
+                var template = Handlebars.compile($("#temp_facility").html());
+                $("#facility").html(template(data));
+            }
+        });
+    }
+
+    //스타일목록
+    $.ajax({
+        type: "get",
+        dataType: "json",
+        url: "/style/list",
+        success: function (data) {
+            var template = Handlebars.compile($("#temp_style_all").html());
+            $("#style_all").html(template(data));
+        }
+    });
+
+    //시설물목록
+    $.ajax({
+        type: "get",
+        dataType: "json",
+        url: "/facility/list",
+        success: function (data) {
+            var template = Handlebars.compile($("#temp_facility_all").html());
+            $("#facility_all").html(template(data));
+        }
+    });
+    //캠프입력
+    $(frm).on("submit", function (e) {
+        e.preventDefault();
+        var name = $(frm.name).val();
+        var tel = $(frm.tel).val();
+        var address = $(frm.address).val();
+        if (name == "") {
+            alert("이름을 입력하셈")
+            $(frm.name).focus();
+        } else if (tel == "") {
+            alert("전화번호를 입력하셈")
+            $(frm.tel).focus();
+        } else if (address == "") {
+            alert("주소를 입력하셈")
+            $(frm.address).focus();
+        } else {
+            if (!confirm(`${name}-${tel}-${address} 저장?`)) return;
+            frm.submit();
+        }
+    });
+</script>

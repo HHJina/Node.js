@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
+  <link rel='stylesheet' href='/stylesheets/common.css' />
+</head>
+
+<body>
+  <div id="page">
+    <div id="top">
+      <h1>
+        <%= title %>
+      </h1>
+      <img src="/images/back.jpg" style="width:960px;margin-top: 20px; ">
+    </div>
+    <div id="menu">
+      <a href="/">Home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="/food/insert">상품등록</a>
+      <a href="" style="float:right">로그인</a>
+    </div>
+    <div id="center">
+      <%-include(pageName)%>
+    </div>
+    <div id="bottom">
+      <h3>Copyright 2022. 인천일보카데미 All Rights Reserved.</h3>
+    </div>
+  </div>
+</body>
+
+</html>

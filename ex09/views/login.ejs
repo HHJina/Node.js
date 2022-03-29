@@ -1,0 +1,54 @@
+<form name="frm">
+    <table>
+        <tr>
+            <th class="title" colspan="2">
+                <h2>로그인</h2>
+            </th>
+        </tr>
+        <tr>
+            <th class="title" width=100>아이디</th>
+            <td width=300><input type="text" name="id"></td>
+        </tr>
+        <tr>
+            <th class="title" width=100>비밀번호</th>
+            <td width=300><input type="password" name="pass"></td>
+        </tr>
+    </table>
+    <div id="buttons">
+        <input type="submit" value="로그인" class="button">
+    </div>
+</form>
+<script>
+    $(frm).on("submit" ,function(e){
+        e.preventDefault();
+        var id=$(frm.id).val();
+        var pass=$(frm.pass).val();
+        if(id==""){
+            alert("아이디를 입력하라우");
+            $(frm.id).focus();
+        }else if(pass==""){
+            alert("비밀번호를 입력하라우 동무")
+            $(frm.pass).focus();
+        }else{
+            //로그인체크 (0:아이디없음, 1:성공, 2:비밀번호틀림)
+            $.ajax({
+                type:"post",
+                dataType:"json",
+                url:"/users/login",
+                data:{id:id, pass:pass},
+                success:function(data){
+                    if(data.result==0){
+                        alert("아이디가 없다우 동무");
+                        $(frm.id).focus();
+                    }else if(data.result==2){
+                        alert("비밀번호가 틀립니더 동무");
+                        $(frm.pass).focus();
+                    }else{
+                        alert("성공입네다");
+                        location.href="/";
+                    }
+                }
+            });
+        }
+    });
+</script>

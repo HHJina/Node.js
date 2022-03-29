@@ -1,0 +1,80 @@
+<style>
+    #container {
+        overflow: hidden;
+        width: 900px;
+        margin: 0 auto;
+    }
+
+    .box {
+        float: left;
+        width: 180px;
+        background: aliceblue;
+        border-radius: 10px;
+        border: 2px solid hotpink;
+        padding: 10px;
+        margin: 10px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        text-align: center;
+        display: block;
+    }
+</style>
+<div id="container"></div>
+<script id="temp" type="text/x-handlebars-template">
+    {{#each rows}}
+        <div class="box">
+            <img src="{{image}}" width=150 onclick="location.href='/food/read?code={{code}}'" style="cursor: pointer;">
+            <div>{{code}}:{{title}}</div>
+            <div>{{fprice}}</div>
+        </div>
+    {{/each}}
+</script>
+<div id="buttons">
+    <button id="prev">이전</button>
+    <span id="curpage"></span>
+    <button id="next">다음</button>
+</div>
+<script>
+    var page=1;
+    getfood();
+
+    $("#prev").on("click",function(){
+        page--;
+        getfood();
+    });
+
+    $("#next").on("click",function(){
+        page++;
+        getfood();
+    });
+
+    function getfood() {
+        $.ajax({
+            type: "get",
+            dataType: "json",
+            url: "/food/list",
+            data:{page:page},
+            success: function (data) {
+                var template = Handlebars.compile($("#temp").html());
+                $("#container").html(template(data));
+                var total=data.total;
+                var lastpage=Math.ceil(total/4);
+                
+                $("#curpage").html(page + "/" + lastpage);
+                if(page==1){
+                    $("#prev").attr("disabled",true);
+                }else{
+                    $("#prev").attr("disabled",false);
+                }
+
+                if(page==lastpage){
+                    $("#next").attr("disabled",true);
+                }else{
+                    $("#next").attr("disabled",false);
+                }
+            }
+
+        });
+    };
+</script>

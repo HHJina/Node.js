@@ -1,0 +1,47 @@
+<form id="frm" method="post" action="insert">
+    <table>
+        <tr>
+            <th width=100 class="title">상품코드</th>
+            <td width=500><input type="text" name="code" value="<%=newcode%>" readonly></td>
+        </tr>
+        <tr>
+            <th width=100 class="title">상품이름</th>
+            <td width=500><input type="text" name="name" size=50></td>
+        </tr>
+        <tr>
+            <th width=100 class="title">상품가격</th>
+            <td width=500><input type="text" name="price"></td>
+        </tr>
+        <tr>
+            <th width=100 class="title">제조사</th>
+            <td width=500><input type="text" name="company"></td>
+        </tr>
+    </table>
+    <div id="buttons">
+        <input type="submit" value="등록" class="button">
+        <input type="reset" value="취소" class="button">
+        <input type="button" value="목록" class="button" onclick="location.href='/'">
+    </div>
+</form>
+<script>
+    $(frm).on("submit", function(e){
+        e.preventDefault();
+        var code=$(frm.code).val();
+        var name=$(frm.name).val();
+        var price=$(frm.price).val();
+        var company=$(frm.company).val();
+        if(name==""){
+            alert("상품이름을 입력하셈")
+            $(frm.name).focus();
+        }else if(price==""){
+            alert("가격을 입력하셈")
+            $(frm.price).focus();
+        }else if(company==""){
+            alert("제조사를 입력하셈")
+            $(frm.company).focus();
+        }else{
+            if(!confirm(`${code}-${name}-${price}-${company} 저장?`)) return;
+            frm.submit();
+        }
+    });
+</script>

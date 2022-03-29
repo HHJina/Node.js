@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    한빛미디어
+  </title>
+  <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
+  <link rel='stylesheet' href='/stylesheets/common.css' />
+</head>
+
+<body>
+  <div id="page">
+    <div id="top">
+      <h1 style="margin: 20px; padding: 20px;">한빛 미디어</h1>
+      <img src="/images/back.jpg" width=960>
+    </div>
+    <div id="menu">
+      <a href="/">Home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <% if(userid==null){ %>
+        <a href="/users/login" style="float: right;">로그인</a>
+        <% }else{ %>
+          <span style="float: right;">
+            <%=userid%>&nbsp;동무&nbsp;&nbsp;
+            <a href="/users/logout" style="float: right;">로그아웃</a>
+          </span>
+          <% } %>
+    </div>
+    <div id="center">
+      <%-include(pagename)%>
+    </div>
+    <div id="bottom">
+      <h3>Copyright 2022. 인천일보카데미 All Rights Reserved.</h3>
+    </div>
+  </div>
+</body>
+
+</html>

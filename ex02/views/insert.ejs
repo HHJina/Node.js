@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <link rel='stylesheet' href='/stylesheets/common.css' />
+    <title>
+        <%=title%>
+    </title>
+</head>
+
+<body>
+    <div id="page">
+        <div id="top">
+            <h1>
+                <%=title%>
+            </h1>
+        </div>
+        <div id="center">
+            <form name="frm" method="post">
+                <table>
+                    <tr>
+                        <th class="title" width=100>이름</th>
+                        <td width=500><input type="text" name="name"></td>
+                    </tr>
+                    <tr>
+                        <th class="title" width=100>전화번호</th>
+                        <td width=500><input type="text" name="tel"></td>
+                    </tr>
+                    <tr>
+                        <th class="title" width=100>주소</th>
+                        <td width=500><input type="text" name="address" size=50></td>
+                    </tr>
+                </table>
+                <div id="buttons">
+                    <input type="submit" value="저장" class="button">
+                    <input type="reset" value="취소" class="button">
+                    <input type="button" value="목록" onclick="location.href='/'" class="button"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+ <script>
+     $(frm).on("submit",function(e){
+        e.preventDefault();
+        let name=$(frm.name).val();
+        let tel=$(frm.tel).val();
+        let address=$(frm.address).val();
+        if(name==""){
+            alert("이름을 입력하세요");
+            $(frm.name).focus();
+        }else if(tel==""){
+            alert("전화번호를 입력하세요");
+            $(frm.tel).focus();
+        }else if(address==""){
+            alert("주소를 입력하세요");
+            $(frm.address).focus();
+        }else{
+            if(!confirm(`${name}-${tel}-${address} 저장하실래요?`)) return;
+            frm.submit(); //back tick
+        }
+     });
+ </script>
+</html>
